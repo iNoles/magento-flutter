@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'form_builder.dart';
+import 'form_builder_validator.dart';
 
 class FormBuilderDropdown<T> extends StatefulWidget {
   final String attribute;
@@ -106,6 +108,8 @@ class _FormBuilderDropdownState<T> extends State<FormBuilderDropdown<T>> {
       key: _fieldKey,
       enabled: !_readOnly,
       initialValue: _initialValue,
+      validator: (val) =>
+          FormBuilderValidators.validateValidators(val, widget.validators),
       onSaved: (val) {
         var transformed;
         if (widget.valueTransformer != null) {
@@ -192,6 +196,7 @@ class _FormBuilderDropdownState<T> extends State<FormBuilderDropdown<T>> {
 /*@override
   Widget build(BuildContext context) {
     _readOnly = _formState?.readOnly == true || widget.readOnly;
+
     return DropdownButtonFormField(
       key: _fieldKey,
       decoration: widget.decoration.copyWith(

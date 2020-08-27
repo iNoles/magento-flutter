@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'accounts_tabs.dart';
 import 'cart_tabs.dart';
-import 'categories_screen.dart';
+import 'home_tabs.dart';
 import 'search_tabs.dart';
 
 class StartScreen extends StatefulWidget {
@@ -14,7 +14,7 @@ class _StartScreenState extends State<StartScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _tabs = [
-    CategoriesScreen(
+    HomeTabs(
       key: PageStorageKey('Home'),
     ),
     SearchTabs(

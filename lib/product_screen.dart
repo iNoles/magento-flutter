@@ -3,6 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'widget/form_builder.dart';
 import 'widget/form_builder_dropdown.dart';
+import 'widget/form_builder_validator.dart';
 import 'utils.dart';
 
 class ProductScreen extends StatelessWidget {
@@ -29,11 +30,11 @@ class ProductScreen extends StatelessWidget {
                   image {
                     url
                   }
-                  price_range {
-                    minimum_price {
-                      regular_price {
-                        currency
+                  price {
+                    regularPrice {
+                      amount {
                         value
+                        currency
                       }
                     }
                   }
@@ -60,6 +61,7 @@ class ProductScreen extends StatelessWidget {
           if (result.hasException) {
             return Text(result.exception.toString());
           }
+
           if (result.loading) {
             return Center(
               child: CircularProgressIndicator(),
@@ -67,8 +69,6 @@ class ProductScreen extends StatelessWidget {
           }
 
           dynamic item = result.data['products']['items'][0];
-          final regularPrice =
-              item['price_range']['minimum_price']['regular_price'];
           return SingleChildScrollView(
             child: FormBuilder(
               key: _formKey,
@@ -81,10 +81,7 @@ class ProductScreen extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(bottom: 20),
                     child: Text(
-                      currencyWithPrice(
-                        regularPrice['currency'],
-                        regularPrice['value'],
-                      ),
+                      currencyWithPrice(item['price']),
                     ),
                   ),
                   getConfigurableOptions(item),
@@ -107,8 +104,9 @@ class ProductScreen extends StatelessWidget {
   }
 
   void onPressedSubmit() {
-    _formKey.currentState.save();
-    print(_formKey.currentState.value);
+    if (_formKey.currentState.saveAndValidate()) {
+      print(_formKey.currentState.value);
+    }
   }
 
   Widget getConfigurableOptions(dynamic data) {
@@ -120,15 +118,17 @@ class ProductScreen extends StatelessWidget {
     for (var option in configurableOptions) {
       widgetList.add(
         FormBuilderDropdown(
-            attribute: option['label'].toLowerCase(),
-            decoration: InputDecoration(labelText: option['label']),
-            items: option['values']
-                .map<DropdownMenuItem>((e) => DropdownMenuItem(
-                      value: e['value_index'],
-                      child: Text(e['label']),
-                    ))
-                .toList(),
-            hint: Text('Select')),
+          attribute: option['label'].toLowerCase(),
+          decoration: InputDecoration(labelText: option['label']),
+          items: option['values']
+              .map<DropdownMenuItem>((e) => DropdownMenuItem(
+                    value: e['value_index'],
+                    child: Text(e['label']),
+                  ))
+              .toList(),
+          hint: Text('Select'),
+          validators: [FormBuilderValidators.required()],
+        ),
       );
     }
 

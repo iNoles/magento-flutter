@@ -70,9 +70,9 @@ class ProductSearch extends SearchDelegate {
               thumbnail {
                 url
               }
-              price_range {
-                minimum_price {
-                  regular_price {
+              price {
+                regularPrice {
+                  amount {
                     value
                     currency
                   }
@@ -87,6 +87,7 @@ class ProductSearch extends SearchDelegate {
         if (result.hasException) {
           return Text(result.exception.toString());
         }
+
         if (result.loading) {
           return Center(
             child: CircularProgressIndicator(),
@@ -96,7 +97,7 @@ class ProductSearch extends SearchDelegate {
         List items = result.data['products']['items'];
         if (items.isEmpty) {
           return Center(
-            child: Text('Item is not found. Try again later'),
+            child: Text('Items are not found. Please try again later'),
           );
         }
         return ListView.separated(
@@ -104,27 +105,20 @@ class ProductSearch extends SearchDelegate {
           itemCount: items.length,
           itemBuilder: (context, index) {
             final item = items[index];
-            final regularPrice =
-                item['price_range']['minimum_price']['regular_price'];
             return ListTile(
               title: Text(item['name']),
               subtitle: Text(
-                currencyWithPrice(
-                  regularPrice['currency'],
-                  regularPrice['value'],
+                currencyWithPrice(item['price']),
+              ),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductScreen(
+                    title: item['name'],
+                    sku: item['sku'],
+                  ),
                 ),
               ),
-              onTap: () {
-                return Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProductScreen(
-                      title: item['name'],
-                      sku: item['sku'],
-                    ),
-                  ),
-                );
-              },
             );
           },
         );

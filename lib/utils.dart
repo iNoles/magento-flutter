@@ -13,5 +13,8 @@ final Map<String, String> _currency = {
   'RON': 'RON',
 };
 
-String currencyWithPrice(String currency, dynamic price) =>
-    '${_currency[currency]} ${price.toString()}';
+String currencyWithPrice(dynamic price) {
+  final regularPrice = price['regularPrice']['amount'];
+  final currency = _currency[regularPrice['currency']];
+  return '${currency}${regularPrice['value'].toString()}';
+}

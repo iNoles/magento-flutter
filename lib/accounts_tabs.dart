@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'signin_screen.dart';
+
 class AccountsTabs extends StatelessWidget {
   AccountsTabs({Key key}) : super(key: key);
 
@@ -20,24 +22,34 @@ class AccountsTabs extends StatelessWidget {
       appBar: AppBar(
         title: Text('Account'),
       ),
-      body: Query(
+      body: guest(context),
+    );
+  }
+
+  Widget guest(BuildContext context) => Align(
+        alignment: Alignment.topCenter,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('Logged in as Guest'),
+            RaisedButton(
+              child: Text('Sign in'),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SignInScreen()),
+              ),
+            )
+          ],
+        ),
+      );
+
+  Widget customer() => Query(
         options: QueryOptions(documentNode: gql(query)),
         builder: (QueryResult result, {Refetch refetch, FetchMore fetchMore}) {
           if (result.hasException) {
-            return Align(
-              alignment: Alignment.topCenter,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text('Logged in as Guest'),
-                  RaisedButton(
-                    child: Text('Sign in'),
-                    onPressed: null,
-                  )
-                ],
-              ),
-            );
+            return Text(result.exception.toString());
           }
+
           if (result.loading) {
             return Center(
               child: CircularProgressIndicator(),
@@ -69,7 +81,5 @@ class AccountsTabs extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
-  }
+      );
 }

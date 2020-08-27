@@ -20,46 +20,45 @@ class CategoryScreen extends StatelessWidget {
         options: QueryOptions(
           documentNode: gql('''
           {
-            categoryList(
-              filters: {
-                ids: {eq: "$categoryId"}
+            products(filter: {
+              category_id: {
+                eq: "$categoryId"
               }
-            ) {
-              products {
-                items {
-                  name
-                  sku
-                  image {
-                    url
-                  }
-                  price_range {
-                    minimum_price {
-                      regular_price {
-                        value
-                        currency
-                      }
+            } ) {
+              items {
+                name
+                sku
+                image {
+                  url
+                }
+                price {
+                  regularPrice {
+                    amount {
+                      value
+                      currency
                     }
                   }
                 }
               }
             }
-            }
-            '''),
+          }
+          '''),
         ),
         builder: (QueryResult result, {Refetch refetch, FetchMore fetchMore}) {
           if (result.hasException) {
             return Text(result.exception.toString());
           }
+
           if (result.loading) {
             return Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          List items = result.data['categoryList'][0]['products']['items'];
+          List items = result.data['products']['items'];
           if (items.isEmpty) {
             return Center(
-              child: Text('Item is not found. Try again later'),
+              child: Text('Items are not found. Please try again later'),
             );
           }
           return ListView.separated(
@@ -67,27 +66,20 @@ class CategoryScreen extends StatelessWidget {
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
-              final regularPrice =
-                  item['price_range']['minimum_price']['regular_price'];
               return ListTile(
                 title: Text(item['name']),
                 subtitle: Text(
-                  currencyWithPrice(
-                    regularPrice['currency'],
-                    regularPrice['value'],
+                  currencyWithPrice(item['price']),
+                ),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProductScreen(
+                      title: item['name'],
+                      sku: item['sku'],
+                    ),
                   ),
                 ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProductScreen(
-                        title: item['name'],
-                        sku: item['sku'],
-                      ),
-                    ),
-                  );
-                },
               );
             },
           );
