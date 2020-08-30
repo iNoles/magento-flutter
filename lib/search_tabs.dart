@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -106,6 +107,9 @@ class ProductSearch extends SearchDelegate {
           itemBuilder: (context, index) {
             final item = items[index];
             return ListTile(
+              leading: CachedNetworkImage(
+                imageUrl: item['thumbnail']['url'],
+              ),
               title: Text(item['name']),
               subtitle: Text(
                 currencyWithPrice(item['price']),

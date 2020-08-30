@@ -1,8 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:magento_flutter/categories_screen.dart';
-import 'package:magento_flutter/product_screen.dart';
 
+import 'categories_screen.dart';
+import 'product_screen.dart';
 import 'utils.dart';
 
 class HomeTabs extends StatelessWidget {
@@ -83,7 +84,15 @@ class HomeTabs extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      Text('Image go here'),
+                      CachedNetworkImage(
+                        imageUrl: item['image']['url'],
+                        placeholder: (context, url) =>
+                            Center(child: CircularProgressIndicator()),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                        height: 130,
+                        width: 115,
+                        fit: BoxFit.fitHeight,
+                      ),
                       Text(item['name']),
                       Text(
                         currencyWithPrice(item['price']),

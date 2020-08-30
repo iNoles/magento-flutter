@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:html/parser.dart' show parse;
@@ -78,7 +79,13 @@ class ProductScreen extends StatelessWidget {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(bottom: 20),
-                    child: Text('Image go here'),
+                    child: CachedNetworkImage(
+                      imageUrl: item['image']['url'],
+                      placeholder: (context, url) =>
+                          Center(child: CircularProgressIndicator()),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                      height: 300,
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(bottom: 20),

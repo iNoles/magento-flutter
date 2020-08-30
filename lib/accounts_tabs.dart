@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:magento_flutter/SignInDetailsModel.dart';
 import 'package:provider/provider.dart';
 
 import 'myorder_screen.dart';
 import 'signin_screen.dart';
+import 'SignInDetailsModel.dart';
 
 class AccountsTabs extends StatelessWidget {
   AccountsTabs({Key key}) : super(key: key);
