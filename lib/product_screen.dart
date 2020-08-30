@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:html/parser.dart' show parse;
 
 import 'widget/form_builder.dart';
 import 'widget/form_builder_dropdown.dart';
@@ -86,7 +87,7 @@ class ProductScreen extends StatelessWidget {
                   ),
                   getConfigurableOptions(item),
                   Text('Product Details'),
-                  Text(item['description']['html']),
+                  Text(parse(item['description']['html']).documentElement.text),
                   SizedBox(
                     width: double.infinity, // match_parent
                     child: RaisedButton(

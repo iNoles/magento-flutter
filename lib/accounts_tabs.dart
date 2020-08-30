@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:magento_flutter/SignInDetailsModel.dart';
+import 'package:provider/provider.dart';
 
+import 'myorder_screen.dart';
 import 'signin_screen.dart';
 
 class AccountsTabs extends StatelessWidget {
   AccountsTabs({Key key}) : super(key: key);
 
-  final String query = '''
+  final String customerQuery = '''
   {
     customer {
       firstname
       lastname
       email
+    }
+  }
+  ''';
+
+  final String revokeToken = '''
+  mutation {
+    revokeCustomerToken {
+      result
     }
   }
   ''';
@@ -22,8 +33,16 @@ class AccountsTabs extends StatelessWidget {
       appBar: AppBar(
         title: Text('Account'),
       ),
-      body: guest(context),
+      body: accountsBody(context),
     );
+  }
+
+  Widget accountsBody(BuildContext context) {
+    final signIn = Provider.of<SignInDetailsModel>(context);
+    if (signIn.isCustomer) {
+      return customer(context);
+    }
+    return guest(context);
   }
 
   Widget guest(BuildContext context) => Align(
@@ -43,8 +62,8 @@ class AccountsTabs extends StatelessWidget {
         ),
       );
 
-  Widget customer() => Query(
-        options: QueryOptions(documentNode: gql(query)),
+  Widget customer(BuildContext context) => Query(
+        options: QueryOptions(documentNode: gql(customerQuery)),
         builder: (QueryResult result, {Refetch refetch, FetchMore fetchMore}) {
           if (result.hasException) {
             return Text(result.exception.toString());
@@ -62,20 +81,44 @@ class AccountsTabs extends StatelessWidget {
             child: Column(
               children: [
                 Text('Contact Information'),
-                Row(
-                  children: [
-                    Text(customer['firstname']),
-                    Text(customer['lastname']),
-                  ],
-                ),
+                Text('${customer['firstname']} ${customer['lastname']}'),
                 Text(customer['email']),
-                RaisedButton(
-                  child: Text('Log Out'),
-                  onPressed: null,
+                Mutation(
+                  options: MutationOptions(
+                    documentNode: gql(revokeToken),
+                    onCompleted: (data) {
+                      final result = data['revokeCustomerToken']['result'];
+                      if (result) {
+                        Scaffold.of(context).showSnackBar(
+                          SnackBar(content: Text('Log out Succeeded!')),
+                        );
+                        Provider.of<SignInDetailsModel>(context, listen: false)
+                            .signOff();
+                      }
+                    },
+                    onError: (error) {
+                      Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(error.toString()),
+                        ),
+                      );
+                    },
+                  ),
+                  builder: (RunMutation runMutation, QueryResult result) {
+                    return RaisedButton(
+                      child: Text('Log Out'),
+                      onPressed: () {
+                        runMutation({});
+                      },
+                    );
+                  },
                 ),
                 RaisedButton(
-                  child: Text('My Order'),
-                  onPressed: null,
+                  child: Text('My Orders'),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyOrderScreen()),
+                  ),
                 )
               ],
             ),
