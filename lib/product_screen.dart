@@ -4,6 +4,7 @@ import 'package:html/parser.dart' show parse;
 
 import 'widget/form_builder.dart';
 import 'widget/form_builder_dropdown.dart';
+import 'widget/form_builder_text_field.dart';
 import 'widget/form_builder_validator.dart';
 import 'utils.dart';
 
@@ -84,6 +85,17 @@ class ProductScreen extends StatelessWidget {
                     child: Text(
                       currencyWithPrice(item['price']),
                     ),
+                  ),
+                  FormBuilderTextField(
+                    attribute: 'quantity',
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hintText: 'Quantity',
+                    ),
+                    validators: [
+                      FormBuilderValidators.required(),
+                      FormBuilderValidators.min(1)
+                    ],
                   ),
                   getConfigurableOptions(item),
                   Text('Product Details'),
