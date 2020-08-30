@@ -60,6 +60,9 @@ class ProductSearch extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
+    if (query.isEmpty) {
+      return Container();
+    }
     return Query(
       options: QueryOptions(
         documentNode: gql('''
@@ -109,6 +112,8 @@ class ProductSearch extends SearchDelegate {
             return ListTile(
               leading: CachedNetworkImage(
                 imageUrl: item['thumbnail']['url'],
+                width: 120,
+                height: 120,
               ),
               title: Text(item['name']),
               subtitle: Text(

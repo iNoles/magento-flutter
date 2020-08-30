@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -61,12 +62,18 @@ class CategoryScreen extends StatelessWidget {
               child: Text('Items are not found. Please try again later'),
             );
           }
+          // Maybe Gridview?
           return ListView.separated(
             separatorBuilder: (context, index) => Divider(),
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
               return ListTile(
+                leading: CachedNetworkImage(
+                  imageUrl: item['image']['url'],
+                  width: 120,
+                  height: 120,
+                ),
                 title: Text(item['name']),
                 subtitle: Text(
                   currencyWithPrice(item['price']),

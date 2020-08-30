@@ -1,6 +1,19 @@
-# magento_flutter
+<hr>
+<p align="center">
+  <b>magento_flutter IS CURRENTLY IN EARLY DEVELOPMENT, NOT READY TO BE USED!</b>
+</p>
+<hr>
 
-Flutter mobile app for Magento 2
+# magento_flutter: Magento 2 Flutter eCommerce App
+
+mangeto_flutter is an e-commerce app for Magento 2.3 onwards. it consunmes [Magento 2 GraphQL API](https://devdocs.magento.com/guides/v2.3/graphql/)
+
+## :camera: Screenshots
+<div style="display:flex;">
+   <img src="screenshots/1.png" width="19%">
+   <img src="screenshots/2.png" width="19%">
+   <img src="screenshots/3.png" width="19%">
+</div>
 
 ## Getting Started
 
