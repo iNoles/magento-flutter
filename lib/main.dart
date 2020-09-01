@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'start_screen.dart';
 import 'SignInDetailsModel.dart';
@@ -17,6 +18,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = Provider.of<SignInDetailsModel>(context);
+    getCustomerFromPref().then((value) {
+      if (value.isNotEmpty) {
+        model.signIn(value);
+      }
+    });
+
     Link link;
     final httpLink = HttpLink(
       uri: 'http://139.162.47.20/magento233/graphql',
@@ -53,5 +60,10 @@ class MyApp extends StatelessWidget {
         home: StartScreen(),
       ),
     );
+  }
+
+  Future<String> getCustomerFromPref() async {
+    var sharedPreference = await SharedPreferences.getInstance();
+    return await sharedPreference.get('customer');
   }
 }

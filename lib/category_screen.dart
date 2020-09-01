@@ -1,5 +1,3 @@
-import 'dart:io' show Platform;
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -65,12 +63,8 @@ class CategoryScreen extends StatelessWidget {
             );
           }
 
-          var gridViewCount = 4;
-          if (Platform.isIOS || Platform.isAndroid || Platform.isFuchsia) {
-            gridViewCount = 2;
-          }
           return GridView.count(
-            crossAxisCount: gridViewCount,
+            crossAxisCount: certainPlatformGridCount(),
             children: List.generate(
               items.length,
               (index) => categoryBox(

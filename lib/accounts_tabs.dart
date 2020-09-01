@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'myorder_screen.dart';
 import 'signin_screen.dart';
@@ -86,7 +87,7 @@ class AccountsTabs extends StatelessWidget {
                 Mutation(
                   options: MutationOptions(
                     documentNode: gql(revokeToken),
-                    onCompleted: (data) {
+                    onCompleted: (data) async {
                       final result = data['revokeCustomerToken']['result'];
                       if (result) {
                         Scaffold.of(context).showSnackBar(
@@ -94,6 +95,8 @@ class AccountsTabs extends StatelessWidget {
                         );
                         Provider.of<SignInDetailsModel>(context, listen: false)
                             .signOff();
+                        var sharedPref = await SharedPreferences.getInstance();
+                        await sharedPref.remove('customer');
                       }
                     },
                     onError: (error) {

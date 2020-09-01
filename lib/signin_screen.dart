@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'SignInDetailsModel.dart';
 
@@ -89,7 +90,7 @@ class _SignInScreenState extends State<SignInScreen> {
               Mutation(
                 options: MutationOptions(
                   documentNode: gql(createToken),
-                  onCompleted: (data) {
+                  onCompleted: (data) async {
                     if (data == null) {
                       return;
                     }
@@ -100,6 +101,8 @@ class _SignInScreenState extends State<SignInScreen> {
                     final token = generateToken['token'];
                     Provider.of<SignInDetailsModel>(context, listen: false)
                         .signIn(token);
+                    var sharedPref = await SharedPreferences.getInstance();
+                    await sharedPref.setString('customer', token);
                     Navigator.pop(context);
                   },
                   onError: (error) {
