@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class SignInDetailsModel with ChangeNotifier {
+class MagentoModel with ChangeNotifier {
   String _token = '';
   bool _isCustomer = false;
   String get token => _token;

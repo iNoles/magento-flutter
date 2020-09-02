@@ -3,7 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'SignInDetailsModel.dart';
+import 'MagentoModel.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -99,7 +99,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       return;
                     }
                     final token = generateToken['token'];
-                    Provider.of<SignInDetailsModel>(context, listen: false)
+                    Provider.of<MagentoModel>(context, listen: false)
                         .signIn(token);
                     var sharedPref = await SharedPreferences.getInstance();
                     await sharedPref.setString('customer', token);

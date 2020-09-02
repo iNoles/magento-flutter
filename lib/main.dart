@@ -3,12 +3,12 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'MagentoModel.dart';
 import 'start_screen.dart';
-import 'SignInDetailsModel.dart';
 
 void main() => runApp(
       ChangeNotifierProvider(
-        create: (_) => SignInDetailsModel(),
+        create: (_) => MagentoModel(),
         child: MyApp(),
       ),
     );
@@ -17,8 +17,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final model = Provider.of<SignInDetailsModel>(context);
-    getCustomerFromPref().then((value) {
+    final model = Provider.of<MagentoModel>(context);
+    _getCustomerFromPref().then((value) {
+      if (value == null) {
+        return;
+      }
       if (value.isNotEmpty) {
         model.signIn(value);
       }
@@ -35,6 +38,7 @@ class MyApp extends StatelessWidget {
     } else {
       link = httpLink;
     }
+
     var client = ValueNotifier<GraphQLClient>(
       GraphQLClient(
         cache: InMemoryCache(),
@@ -62,7 +66,7 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  Future<String> getCustomerFromPref() async {
+  Future<String> _getCustomerFromPref() async {
     var sharedPreference = await SharedPreferences.getInstance();
     return await sharedPreference.get('customer');
   }

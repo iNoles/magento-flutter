@@ -33,6 +33,7 @@ class ProductScreen extends StatelessWidget {
                   image {
                     url
                   }
+                  __typename
                   price {
                     regularPrice {
                       amount {
@@ -46,11 +47,18 @@ class ProductScreen extends StatelessWidget {
                   }
                   ... on ConfigurableProduct {
                     configurable_options {
-                      id
                       label
                       values {
-                        value_index
                         label
+                      }
+                    }
+                    variants {
+                      product {
+                        sku
+                      }
+                      attributes {
+                        label
+                        code
                       }
                     }
                   }
@@ -142,7 +150,7 @@ class ProductScreen extends StatelessWidget {
           decoration: InputDecoration(labelText: option['label']),
           items: option['values']
               .map<DropdownMenuItem>((e) => DropdownMenuItem(
-                    value: e['value_index'],
+                    value: e['label'],
                     child: Text(e['label']),
                   ))
               .toList(),
