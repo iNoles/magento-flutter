@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'accounts_tabs.dart';
+import 'cart_provider.dart';
 import 'cart_tabs.dart';
 import 'home_tabs.dart';
 import 'search_tabs.dart';
+import 'utils.dart';
 
 class StartScreen extends StatefulWidget {
   @override
@@ -32,6 +35,10 @@ class _StartScreenState extends State<StartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cart = context.watch<CartProvider>();
+    if (cart.id.isEmpty) {
+      getCart(context);
+    }
     return Scaffold(
       body: PageStorage(
         child: _tabs[_selectedIndex],

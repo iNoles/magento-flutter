@@ -95,7 +95,8 @@ class HomeTabs extends StatelessWidget {
                       ),
                       Text(item['name']),
                       Text(
-                        currencyWithPrice(item['price']),
+                        currencyWithPrice(
+                            item['price']['regularPrice']['amount']),
                         style: TextStyle(fontWeight: FontWeight.bold),
                       )
                     ],

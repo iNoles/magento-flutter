@@ -1,4 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:provider/provider.dart';
+
+import 'cart_provider.dart';
+import 'utils.dart';
 
 class CartTabs extends StatelessWidget {
   CartTabs({Key key}) : super(key: key);
@@ -9,27 +15,30 @@ class CartTabs extends StatelessWidget {
       appBar: AppBar(
         title: Text('Cart'),
       ),
-      body: cardBody(),
+      body: cardBody(context),
     );
   }
 
-  Widget cardBody() {
-    return Center(
-      child: Text('Shopping Cart'),
-    );
-  }
-
-  /*Widget cardBody(BuildContext context) {
+  Widget cardBody(BuildContext context) {
+    final cartProvider = context.watch<CartProvider>();
     return Query(
       options: QueryOptions(documentNode: gql('''
       {
-        cart(cart_id: "") {
+        cart(cart_id: "${cartProvider.id}") {
           items {
+            id
             product {
               name
               thumbnail {
                 url
               }
+            }
+            quantity
+          }
+          prices {
+            grand_total {
+              value
+              currency
             }
           }
         }
@@ -47,6 +56,7 @@ class CartTabs extends StatelessWidget {
         }
 
         List items = result.data['cart']['items'];
+        dynamic prices = result.data['cart']['prices'];
         return ListView.builder(
           itemCount: items.length,
           itemBuilder: (context, index) {
@@ -58,11 +68,19 @@ class CartTabs extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Spacer(),
+                          CachedNetworkImage(
+                            imageUrl: item['product']['thumbnail']['url'],
+                            width: 120,
+                            height: 120,
+                          ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(item['product']['name']),
+                              /*Text(
+                                'Price: ${currencyWithPrice(item['prices']['row_total'])}',
+                              ),*/
+                              Text('qty: ${item['quantity']}')
                             ],
                           ),
                           Spacer(),
@@ -72,7 +90,9 @@ class CartTabs extends StatelessWidget {
                     ],
                   ),
                 ),
-                Text('Total: \$0.00'),
+                Text(
+                  'Total: ${currencyWithPrice(prices['grand_total'])}',
+                ),
                 SizedBox(
                   width: double.infinity, // match_parent
                   child: RaisedButton(
@@ -86,5 +106,5 @@ class CartTabs extends StatelessWidget {
         );
       },
     );
-  }*/
+  }
 }

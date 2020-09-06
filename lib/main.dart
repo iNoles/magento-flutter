@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:magento_flutter/cart_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import 'MagentoModel.dart';
+import 'accounts_provider.dart';
 import 'start_screen.dart';
 
 void main() => runApp(
-      ChangeNotifierProvider(
-        create: (_) => MagentoModel(),
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => AccountsProvider()),
+          ChangeNotifierProvider(create: (_) => CartProvider()),
+        ],
         child: MyApp(),
       ),
     );
@@ -17,23 +20,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final model = Provider.of<MagentoModel>(context);
-    _getCustomerFromPref().then((value) {
-      if (value == null) {
-        return;
-      }
-      if (value.isNotEmpty) {
-        model.signIn(value);
-      }
-    });
-
     Link link;
     final httpLink = HttpLink(
       uri: 'http://139.162.47.20/magento233/graphql',
     );
 
-    if (model.isCustomer) {
-      final authLink = AuthLink(getToken: () => 'Bearer ${model.token}');
+    final provider = context.watch<AccountsProvider>();
+    if (provider.isCustomer) {
+      final authLink = AuthLink(getToken: () => 'Bearer ${provider.token}');
       link = authLink.concat(httpLink);
     } else {
       link = httpLink;
@@ -45,6 +39,7 @@ class MyApp extends StatelessWidget {
         link: link,
       ),
     );
+
     return GraphQLProvider(
       client: client,
       child: MaterialApp(
@@ -64,10 +59,5 @@ class MyApp extends StatelessWidget {
         home: StartScreen(),
       ),
     );
-  }
-
-  Future<String> _getCustomerFromPref() async {
-    var sharedPreference = await SharedPreferences.getInstance();
-    return await sharedPreference.get('customer');
   }
 }

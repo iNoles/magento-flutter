@@ -2,7 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:html/parser.dart' show parse;
+import 'package:provider/provider.dart';
 
+import 'cart_provider.dart';
+import 'product_cart.dart';
 import 'widget/form_builder.dart';
 import 'widget/form_builder_dropdown.dart';
 import 'widget/form_builder_text_field.dart';
@@ -19,6 +22,7 @@ class ProductScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cartProvider = context.watch<CartProvider>();
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -98,7 +102,8 @@ class ProductScreen extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(bottom: 20),
                     child: Text(
-                      currencyWithPrice(item['price']),
+                      currencyWithPrice(
+                          item['price']['regularPrice']['amount']),
                     ),
                   ),
                   FormBuilderTextField(
@@ -117,10 +122,7 @@ class ProductScreen extends StatelessWidget {
                   Text(parse(item['description']['html']).documentElement.text),
                   SizedBox(
                     width: double.infinity, // match_parent
-                    child: RaisedButton(
-                      onPressed: onPressedSubmit,
-                      child: Text('Add to cart'),
-                    ),
+                    child: orderMutation(item, cartProvider),
                   ),
                 ],
               ),
@@ -131,10 +133,42 @@ class ProductScreen extends StatelessWidget {
     );
   }
 
-  void onPressedSubmit() {
-    if (_formKey.currentState.saveAndValidate()) {
-      print(_formKey.currentState.value);
+  Widget orderMutation(dynamic item, CartProvider cartProvider) {
+    var mutationString = '';
+    final types = item['__typename'];
+    if (types == 'SimpleProduct') {
+      mutationString = simpleProducts;
+    } else if (types == 'VirtualProduct') {
+      mutationString = virtualProducts;
     }
+
+    if (mutationString.isEmpty) {
+      return RaisedButton(
+        child: Text('Add to cart'),
+        onPressed: null,
+      );
+    }
+    return Mutation(
+      options: MutationOptions(
+        documentNode: gql(mutationString),
+        onError: (error) => print(error),
+      ),
+      builder: (runMutation, result) {
+        return RaisedButton(
+            child: Text('Add to cart'),
+            onPressed: () {
+              if (types == 'SimpleProduct' || types == 'VirtualProduct') {
+                if (_formKey.currentState.saveAndValidate()) {
+                  runMutation({
+                    'id': cartProvider.id,
+                    'qty': _formKey.currentState.value['quantity'],
+                    'sku': sku
+                  });
+                }
+              }
+            });
+      },
+    );
   }
 
   Widget getConfigurableOptions(dynamic data) {

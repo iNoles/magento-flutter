@@ -99,7 +99,7 @@ class CategoryScreen extends StatelessWidget {
                 height: 120,
               ),
               Text(item['name']),
-              Text(currencyWithPrice(item['price'])),
+              Text(currencyWithPrice(item['price']['regularPrice']['amount'])),
             ],
           ),
         ),

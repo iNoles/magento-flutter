@@ -1,6 +1,11 @@
 import 'dart:io' show Platform;
 
-final Map<String, String> _currency = {
+import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:provider/provider.dart';
+import 'cart_provider.dart';
+
+final Map<String, String> _currencies = {
   'USD': '\$',
   'EUR': '€',
   'AUD': 'A\$',
@@ -16,15 +21,35 @@ final Map<String, String> _currency = {
 };
 
 String currencyWithPrice(dynamic price) {
-  final regularPrice = price['regularPrice']['amount'];
-  final currency = _currency[regularPrice['currency']];
-  return '${currency}${regularPrice['value'].toString()}';
+  final currency = _currencies[price['currency']];
+  return '${currency}${price['value'].toString()}';
 }
 
+/// Desktop Platform = 4 and Mobile Platform = 2
 int certainPlatformGridCount() {
   var gridViewCount = 4;
   if (Platform.isIOS || Platform.isAndroid || Platform.isFuchsia) {
     gridViewCount = 2;
   }
   return gridViewCount;
+}
+
+Future<void> getCart(BuildContext context) async {
+  final client = GraphQLProvider.of(context)?.value;
+  var result = await client.mutate(
+    MutationOptions(documentNode: gql('''
+    mutation {
+      createEmptyCart
+    }
+    ''')),
+  );
+
+  if (result.hasException) {
+    print(result.exception.toString());
+    return;
+  }
+
+  final cardId = result.data['createEmptyCart'];
+  print(cardId);
+  await context.read<CartProvider>().setId(cardId);
 }

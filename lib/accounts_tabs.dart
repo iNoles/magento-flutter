@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'myorder_screen.dart';
 import 'signin_screen.dart';
-import 'MagentoModel.dart';
+import 'accounts_provider.dart';
 
 class AccountsTabs extends StatelessWidget {
   AccountsTabs({Key key}) : super(key: key);
@@ -39,8 +39,9 @@ class AccountsTabs extends StatelessWidget {
   }
 
   Widget accountsBody(BuildContext context) {
-    final model = Provider.of<MagentoModel>(context);
-    if (model.isCustomer) {
+    final isLoggedOn =
+        context.select<AccountsProvider, bool>((value) => value.isCustomer);
+    if (isLoggedOn) {
       return customer(context);
     }
     return guest(context);
@@ -93,7 +94,7 @@ class AccountsTabs extends StatelessWidget {
                         Scaffold.of(context).showSnackBar(
                           SnackBar(content: Text('Log out Succeeded!')),
                         );
-                        Provider.of<MagentoModel>(context, listen: false)
+                        Provider.of<AccountsProvider>(context, listen: false)
                             .signOff();
                         var sharedPref = await SharedPreferences.getInstance();
                         await sharedPref.remove('customer');

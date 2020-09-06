@@ -5,67 +5,79 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'product_screen.dart';
 import 'utils.dart';
 
-class SearchTabs extends StatelessWidget {
+class SearchTabs extends StatefulWidget {
   SearchTabs({Key key}) : super(key: key);
+
+  @override
+  _SearchTabState createState() => _SearchTabState();
+}
+
+class _SearchTabState extends State<SearchTabs> {
+  Widget _title = Text('Product Search');
+  Icon _actionButton = Icon(Icons.search);
+  Widget _body = Container();
+
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.removeListener(() {
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search'),
-        leading: IconButton(
-          icon: Icon(Icons.search),
-          onPressed: () {
-            showSearch(
-              context: context,
-              delegate: ProductSearch(),
-            );
-          },
-        ),
+        title: _title,
+        actions: [
+          IconButton(
+            icon: _actionButton,
+            onPressed: () {
+              setState(() {
+                if (_actionButton.icon == Icons.search) {
+                  _actionButton = Icon(Icons.close);
+                  _title = TextField(
+                    controller: _controller,
+                    textInputAction: TextInputAction.search,
+                    style: Theme.of(context).textTheme.headline6,
+                    decoration: InputDecoration(
+                      hintText: 'Search',
+                      border: InputBorder.none,
+                    ),
+                    onSubmitted: (_) {
+                      setState(() {
+                        _body = queryBody(_controller.text);
+                      });
+                    },
+                  );
+                } else {
+                  _title = Text('Product Search');
+                  _actionButton = Icon(Icons.search);
+                  _controller.clear();
+                }
+              });
+            },
+          ),
+        ],
       ),
-    );
-  }
-}
-
-class ProductSearch extends SearchDelegate {
-  @override
-  ThemeData appBarTheme(BuildContext context) {
-    assert(context != null);
-    final theme = Theme.of(context);
-    assert(theme != null);
-    return theme;
-  }
-
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-        },
-      ),
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.arrow_back),
-      onPressed: () {
-        close(context, null);
-      },
+      body: _body,
     );
   }
 
-  @override
-  Widget buildResults(BuildContext context) {
-    if (query.isEmpty) {
-      return Container();
-    }
-    return Query(
-      options: QueryOptions(
-        documentNode: gql('''
+  Widget queryBody(String query) => Query(
+        options: QueryOptions(
+          documentNode: gql('''
         {
           products(search: "$query") {
             items {
@@ -86,57 +98,51 @@ class ProductSearch extends SearchDelegate {
           }
         }
       '''),
-      ),
-      builder: (QueryResult result, {Refetch refetch, FetchMore fetchMore}) {
-        if (result.hasException) {
-          return Text(result.exception.toString());
-        }
+        ),
+        builder: (QueryResult result, {Refetch refetch, FetchMore fetchMore}) {
+          if (result.hasException) {
+            return Text(result.exception.toString());
+          }
 
-        if (result.loading) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
+          if (result.loading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-        List items = result.data['products']['items'];
-        if (items.isEmpty) {
-          return Center(
-            child: Text('Items are not found. Please try again later'),
-          );
-        }
-        return ListView.separated(
-          separatorBuilder: (context, index) => Divider(),
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            final item = items[index];
-            return ListTile(
-              leading: CachedNetworkImage(
-                imageUrl: item['thumbnail']['url'],
-                width: 120,
-                height: 120,
-              ),
-              title: Text(item['name']),
-              subtitle: Text(
-                currencyWithPrice(item['price']),
-              ),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProductScreen(
-                    title: item['name'],
-                    sku: item['sku'],
+          List items = result.data['products']['items'];
+          if (items.isEmpty) {
+            return Center(
+              child: Text('Items are not found. Please try again later'),
+            );
+          }
+          return ListView.separated(
+            separatorBuilder: (context, index) => Divider(),
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              return ListTile(
+                leading: CachedNetworkImage(
+                  imageUrl: item['thumbnail']['url'],
+                  width: 120,
+                  height: 120,
+                ),
+                title: Text(item['name']),
+                subtitle: Text(
+                  currencyWithPrice(item['price']),
+                ),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProductScreen(
+                      title: item['name'],
+                      sku: item['sku'],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return Container();
-  }
+              );
+            },
+          );
+        },
+      );
 }
