@@ -6,7 +6,7 @@
 
 # magento_flutter: Magento 2 Flutter eCommerce App
 
-mangeto_flutter is an e-commerce app for Magento 2.3 onwards. it consumes [Magento 2 GraphQL API](https://devdocs.magento.com/guides/v2.3/graphql/) to display catalog, products, add products to cart and let you place order.
+mangeto_flutter is an e-commerce app for Magento 2.3.2 onwards. it consumes [Magento 2 GraphQL API](https://devdocs.magento.com/guides/v2.3/graphql/) to display catalog, products, add products to cart and let you place order.
 
 ## :camera: Screenshots
 <div style="display:flex;">

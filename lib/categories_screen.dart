@@ -76,9 +76,7 @@ class CategoriesScreen extends StatelessWidget {
       key: PageStorageKey<dynamic>(children),
       title: Text(children['name'] ?? 'Empty'),
       children: children['children']
-          .map<Widget>(
-            (e) => _buildTitles(context, e),
-          )
+          .map<Widget>((e) => _buildTitles(context, e))
           .toList(),
     );
   }
