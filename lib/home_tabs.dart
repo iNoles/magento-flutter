@@ -19,12 +19,12 @@ class HomeTabs extends StatelessWidget {
     );
   }
 
-  Widget productsList(BuildContext context, int categoryId) {
+  Widget productsList(BuildContext context) {
     return Query(
       options: QueryOptions(
         documentNode: gql('''
         {
-          category(id: $categoryId) {
+          categoryList(filters: { ids: {in: ["20", "11"]}}) {
             products {
               items {
                 name
@@ -32,11 +32,11 @@ class HomeTabs extends StatelessWidget {
                 image {
                   url
                 }
-                price {
-                  regularPrice {
-                    amount {
-                      value
+                price_range {
+                  minimum_price {
+                    final_price {
                       currency
+                      value
                     }
                   }
                 }
@@ -57,81 +57,77 @@ class HomeTabs extends StatelessWidget {
           );
         }
 
-        List items = result.data['category']['products']['items'];
-        return Container(
-          height: 185,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index];
-              return Container(
-                height: 115,
-                margin: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: InkWell(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProductScreen(
-                        title: item['name'],
-                        sku: item['sku'],
+        List items = result.data['categoryList'][0]['products']['items'];
+        dynamic title = result.data['categoryList'][0]['name'] ?? 'Empty';
+        return Column(
+          children: [
+            Container(
+              margin: EdgeInsets.all(10),
+              child: Text(
+                title,
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+            Container(
+              height: 185,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  final item = items[index];
+                  return Container(
+                    height: 115,
+                    margin: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: InkWell(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductScreen(
+                            title: item['name'],
+                            sku: item['sku'],
+                          ),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          CachedNetworkImage(
+                            imageUrl: item['image']['url'],
+                            placeholder: (context, url) =>
+                                Center(child: CircularProgressIndicator()),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                            height: 130,
+                            width: 115,
+                            fit: BoxFit.fitHeight,
+                          ),
+                          Text(item['name']),
+                          Text(
+                            currencyWithPrice(
+                              item['price_range']['minimum_price']
+                                  ['final_price'],
+                            ),
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )
+                        ],
                       ),
                     ),
-                  ),
-                  child: Column(
-                    children: [
-                      CachedNetworkImage(
-                        imageUrl: item['image']['url'],
-                        placeholder: (context, url) =>
-                            Center(child: CircularProgressIndicator()),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                        height: 130,
-                        width: 115,
-                        fit: BoxFit.fitHeight,
-                      ),
-                      Text(item['name']),
-                      Text(
-                        currencyWithPrice(
-                            item['price']['regularPrice']['amount']),
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      )
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
+                  );
+                },
+              ),
+            ),
+          ],
         );
       },
     );
   }
 
   Widget featuredCategory(BuildContext context) {
-    var category = <Map<String, dynamic>>[
-      {'title': 'Women Sale', 'category': 20},
-      {'title': 'Men Sale', 'category': 11}
-    ];
     final children = <Widget>[];
-    category.forEach((element) {
-      children.add(
-        Column(
-          children: [
-            Container(
-              margin: EdgeInsets.all(10),
-              child: Text(
-                element['title'],
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
-            productsList(context, element['category'])
-          ],
-        ),
-      );
-    });
+    children.add(productsList(context));
     children.add(
       RaisedButton(
         child: Text('All Categories'),

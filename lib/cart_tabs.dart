@@ -33,6 +33,12 @@ class CartTabs extends StatelessWidget {
                 url
               }
             }
+            prices {
+              row_total {
+                value
+                currency
+              }
+            }
             quantity
           }
           prices {
@@ -77,9 +83,9 @@ class CartTabs extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(item['product']['name']),
-                              /*Text(
+                              Text(
                                 'Price: ${currencyWithPrice(item['prices']['row_total'])}',
-                              ),*/
+                              ),
                               Text('qty: ${item['quantity']}')
                             ],
                           ),
@@ -90,15 +96,36 @@ class CartTabs extends StatelessWidget {
                     ],
                   ),
                 ),
-                Text(
-                  'Total: ${currencyWithPrice(prices['grand_total'])}',
-                ),
-                SizedBox(
-                  width: double.infinity, // match_parent
-                  child: RaisedButton(
-                    onPressed: () {},
-                    child: Text('Place the order'),
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'TOTAL',
+                            style: Theme.of(context).textTheme.subtitle2,
+                          ),
+                          Text(
+                            currencyWithPrice(prices['grand_total']),
+                            style: Theme.of(context).textTheme.headline5,
+                          )
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        height: 50,
+                        child: RaisedButton(
+                          child: Text('CHECKOUT'),
+                          onPressed: null,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ],
             );

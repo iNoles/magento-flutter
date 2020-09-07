@@ -8,17 +8,13 @@ class CategoriesScreen extends StatelessWidget {
 
   final String query = '''
 {
-  category(id: 2) {
+  categoryList {
     children {
       id
       name
       children {
         id
         name
-        children {
-          id
-          name
-        }
       }
     }
   }
@@ -44,7 +40,7 @@ class CategoriesScreen extends StatelessWidget {
             );
           }
 
-          List childrens = result.data['category']['children'];
+          List childrens = result.data['categoryList'][0]['children'];
           return ListView.builder(
             itemCount: childrens.length,
             itemBuilder: (context, index) {

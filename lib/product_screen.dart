@@ -38,11 +38,11 @@ class ProductScreen extends StatelessWidget {
                     url
                   }
                   __typename
-                  price {
-                    regularPrice {
-                      amount {
-                        value
+                  price_range {
+                    minimum_price {
+                      final_price {
                         currency
+                        value
                       }
                     }
                   }
@@ -103,7 +103,8 @@ class ProductScreen extends StatelessWidget {
                     padding: EdgeInsets.only(bottom: 20),
                     child: Text(
                       currencyWithPrice(
-                          item['price']['regularPrice']['amount']),
+                        item['price_range']['minimum_price']['final_price'],
+                      ),
                     ),
                   ),
                   FormBuilderTextField(

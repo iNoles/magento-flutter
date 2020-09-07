@@ -86,11 +86,11 @@ class _SearchTabState extends State<SearchTabs> {
               thumbnail {
                 url
               }
-              price {
-                regularPrice {
-                  amount {
-                    value
+              price_range {
+                minimum_price {
+                  final_price {
                     currency
+                    value
                   }
                 }
               }
@@ -129,7 +129,9 @@ class _SearchTabState extends State<SearchTabs> {
                 ),
                 title: Text(item['name']),
                 subtitle: Text(
-                  currencyWithPrice(item['price']),
+                  currencyWithPrice(
+                    item['price_range']['minimum_price']['final_price'],
+                  ),
                 ),
                 onTap: () => Navigator.push(
                   context,

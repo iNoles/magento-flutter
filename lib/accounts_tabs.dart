@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'myorder_screen.dart';
 import 'signin_screen.dart';
 import 'accounts_provider.dart';
+import 'utils.dart';
 
 class AccountsTabs extends StatelessWidget {
   AccountsTabs({Key key}) : super(key: key);
@@ -98,6 +99,7 @@ class AccountsTabs extends StatelessWidget {
                             .signOff();
                         var sharedPref = await SharedPreferences.getInstance();
                         await sharedPref.remove('customer');
+                        await getCart(context);
                       }
                     },
                     onError: (error) {
