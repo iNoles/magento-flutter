@@ -90,7 +90,7 @@ class CartTabs extends StatelessWidget {
                             ],
                           ),
                           Spacer(),
-                          Icon(Icons.delete)
+                          removeItems(context, item['id']),
                         ],
                       ),
                     ],
@@ -134,4 +134,37 @@ class CartTabs extends StatelessWidget {
       },
     );
   }
+
+  Widget removeItems(BuildContext context, int id) => Mutation(
+        options: MutationOptions(documentNode: gql('''
+        mutation RemoveItem(\$cartId: String!, \$itemId: Int!) {
+          removeItemFromCart(
+            input: {
+              cart_id: \$cartId,
+              cart_item_id: \$itemId
+            }
+          ) {
+            cart {
+              items {
+                product {
+                  name
+                }
+              }
+            }
+          }
+        }
+      ''')),
+        builder: (RunMutation runMutation, QueryResult result) {
+          final cartProvider = context.watch<CartProvider>();
+          return IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              runMutation({
+                'cartId': cartProvider.id,
+                'itemId': id,
+              });
+            },
+          );
+        },
+      );
 }

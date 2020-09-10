@@ -7,6 +7,7 @@ import 'myorder_screen.dart';
 import 'signin_screen.dart';
 import 'accounts_provider.dart';
 import 'utils.dart';
+import 'wishlist_screen.dart';
 
 class AccountsTabs extends StatelessWidget {
   AccountsTabs({Key key}) : super(key: key);
@@ -125,7 +126,14 @@ class AccountsTabs extends StatelessWidget {
                     context,
                     MaterialPageRoute(builder: (context) => MyOrderScreen()),
                   ),
-                )
+                ),
+                RaisedButton(
+                  child: Text('My Wishlists'),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => WishlistScreen()),
+                  ),
+                ),
               ],
             ),
           );
