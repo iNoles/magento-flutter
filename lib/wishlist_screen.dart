@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:magento_flutter/product_screen.dart';
-import 'package:magento_flutter/utils.dart';
+
+import 'product_screen.dart';
+import 'utils.dart';
 
 class WishlistScreen extends StatelessWidget {
   final String query = '''
@@ -13,10 +14,10 @@ class WishlistScreen extends StatelessWidget {
             sku
             name
             price_range {
-              maximum_price {
-                regular_price {
-                  value
+              minimum_price {
+                final_price {
                   currency
+                  value
                 }
               }
             }
@@ -54,7 +55,7 @@ class WishlistScreen extends StatelessWidget {
                   title: Text(item['product']['name']),
                   subtitle: Text(
                     currencyWithPrice(
-                        item['price_range']['maximum_price']['regular_price']),
+                        item['price_range']['minimum_price']['final_price']),
                   ),
                   onTap: () => Navigator.push(
                         context,

@@ -13,7 +13,7 @@ class FormBuilderTextField extends StatefulWidget {
   final ValueChanged onChanged;
   final ValueTransformer valueTransformer;
 
-  final bool autovalidate;
+  final AutovalidateMode autovalidateMode;
   final int maxLines;
   final TextInputType keyboardType;
   final bool obscureText;
@@ -61,7 +61,7 @@ class FormBuilderTextField extends StatefulWidget {
     this.validators = const [],
     this.readOnly = false,
     this.decoration = const InputDecoration(),
-    this.autovalidate = false,
+    this.autovalidateMode = AutovalidateMode.disabled,
     this.maxLines = 1,
     this.obscureText = false,
     this.textCapitalization = TextCapitalization.none,
@@ -158,7 +158,7 @@ class FormBuilderTextFieldState extends State<FormBuilderTextField> {
       decoration: widget.decoration.copyWith(
         enabled: !_readOnly,
       ),
-      autovalidate: widget.autovalidate ?? false,
+      autovalidateMode: widget.autovalidateMode ?? AutovalidateMode.disabled,
       onChanged: (val) {
         widget.onChanged?.call(_effectiveController.text);
       },

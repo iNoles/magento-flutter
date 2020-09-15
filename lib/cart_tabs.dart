@@ -135,7 +135,7 @@ class CartTabs extends StatelessWidget {
     );
   }
 
-  Widget removeItems(BuildContext context, int id) => Mutation(
+  Widget removeItems(BuildContext context, String id) => Mutation(
         options: MutationOptions(documentNode: gql('''
         mutation RemoveItem(\$cartId: String!, \$itemId: Int!) {
           removeItemFromCart(

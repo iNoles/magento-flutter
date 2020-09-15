@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     Link link;
     final httpLink = HttpLink(
-      uri: 'http://139.162.47.20/magento234/graphql',
+      uri: 'https://devdemo.bsscommerce.com/magento234/default/graphql',
     );
 
     final provider = context.watch<AccountsProvider>();

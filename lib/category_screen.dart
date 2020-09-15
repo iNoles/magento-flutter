@@ -32,11 +32,11 @@ class CategoryScreen extends StatelessWidget {
                 image {
                   url
                 }
-                price {
-                  regularPrice {
-                    amount {
-                      value
+                price_range {
+                  minimum_price {
+                    final_price {
                       currency
+                      value
                     }
                   }
                 }
@@ -99,7 +99,10 @@ class CategoryScreen extends StatelessWidget {
                 height: 120,
               ),
               Text(item['name']),
-              Text(currencyWithPrice(item['price']['regularPrice']['amount'])),
+              Text(
+                currencyWithPrice(
+                    item['price_range']['minimum_price']['final_price']),
+              ),
             ],
           ),
         ),

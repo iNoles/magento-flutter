@@ -110,6 +110,7 @@ class ProductScreen extends StatelessWidget {
                   FormBuilderTextField(
                     attribute: 'quantity',
                     keyboardType: TextInputType.number,
+                    initialValue: '1',
                     decoration: InputDecoration(
                       hintText: 'Quantity',
                     ),
@@ -141,6 +142,8 @@ class ProductScreen extends StatelessWidget {
       mutationString = simpleProducts;
     } else if (types == 'VirtualProduct') {
       mutationString = virtualProducts;
+    } else if (types == 'ConfigurableProduct') {
+      mutationString = configurableProducts;
     }
 
     if (mutationString.isEmpty) {
@@ -152,6 +155,7 @@ class ProductScreen extends StatelessWidget {
     return Mutation(
       options: MutationOptions(
         documentNode: gql(mutationString),
+        onCompleted: (data) => print(data),
         onError: (error) => print(error),
       ),
       builder: (runMutation, result) {
@@ -166,10 +170,47 @@ class ProductScreen extends StatelessWidget {
                     'sku': sku
                   });
                 }
+              } else if (types == 'ConfigurableProduct' &&
+                  _formKey.currentState.saveAndValidate()) {
+                runMutation({
+                  'id': cartProvider.id,
+                  'qty': _formKey.currentState.value['quantity'],
+                  'parentSku': sku,
+                  'variantSku': getVariantSku(item),
+                });
               }
             });
       },
     );
+  }
+
+  String getVariantSku(dynamic data) {
+    var variantSku = '';
+    var formValues = _formKey.currentState.value.entries.toList();
+    print(formValues);
+    var variants = data['variants'] as List;
+    for (var variant in variants) {
+      var attributes = variant['attributes'] as List;
+      var first = attributes
+          .firstWhere((element) => element['code'] == formValues[1].key);
+      var second = attributes
+          .firstWhere((element) => element['code'] == formValues[2].key);
+      if (formValues.length > 3 && formValues.elementAt(3) != null) {
+        var third = attributes
+            .firstWhere((element) => element['code'] == formValues[3].key);
+        if (first['label'] == formValues[1].value &&
+            second['label'] == formValues[2].value &&
+            third['label'] == formValues[3].value) {
+          variantSku = variant['product']['sku'];
+          break;
+        }
+      } else if (first['label'] == formValues[1].value &&
+          second['label'] == formValues[2].value) {
+        variantSku = variant['product']['sku'];
+        break;
+      }
+    }
+    return variantSku;
   }
 
   Widget getConfigurableOptions(dynamic data) {
