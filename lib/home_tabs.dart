@@ -7,8 +7,6 @@ import 'product_screen.dart';
 import 'utils.dart';
 
 class HomeTabs extends StatelessWidget {
-  HomeTabs({Key key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

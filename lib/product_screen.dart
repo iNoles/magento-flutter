@@ -112,7 +112,7 @@ class ProductScreen extends StatelessWidget {
                     keyboardType: TextInputType.number,
                     initialValue: '1',
                     decoration: InputDecoration(
-                      hintText: 'Quantity',
+                      labelText: 'Quantity',
                     ),
                     validators: [
                       FormBuilderValidators.required(),
