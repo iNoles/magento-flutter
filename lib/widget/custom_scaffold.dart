@@ -14,19 +14,11 @@ class CustomScaffold extends StatefulWidget {
   /// `page 0` will be presented when `item 0` in the [BottomNavigationBar] clicked.
   final List<Widget> children;
 
-  /// Called when one of the [items] is tapped.
-  ///
-  /// The stateful widget handles your page navigation by default,
-  /// so no need to keep track of the index
-  final Function(int) onItemTap;
-
-  CustomScaffold(
-      // Can't be constant because of assertions :(
-      {Key key,
-      @required this.scaffold,
-      @required this.children,
-      this.onItemTap})
-      : assert(scaffold != null),
+  CustomScaffold({
+    Key key,
+    @required this.scaffold,
+    @required this.children,
+  })  : assert(scaffold != null),
         assert(children != null),
         assert(scaffold.bottomNavigationBar != null),
         assert(scaffold.bottomNavigationBar is BottomNavigationBar,
@@ -46,11 +38,6 @@ class CustomScaffold extends StatefulWidget {
 class _CustomScaffoldState extends State<CustomScaffold> {
   int _index = 0;
   final GlobalKey<NavigatorState> _key = GlobalKey<NavigatorState>();
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +79,6 @@ class _CustomScaffoldState extends State<CustomScaffold> {
       onTap: (index) {
         setState(() => _index = index);
         _key.currentState.maybePop();
-        widget.onItemTap(index);
       },
       backgroundColor: b.backgroundColor,
       elevation: b.elevation,

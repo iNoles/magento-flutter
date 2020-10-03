@@ -147,7 +147,7 @@ class ProductScreen extends StatelessWidget {
     }
 
     if (mutationString.isEmpty) {
-      return RaisedButton(
+      return ElevatedButton(
         child: Text('Add to cart'),
         onPressed: null,
       );
@@ -159,7 +159,7 @@ class ProductScreen extends StatelessWidget {
         onError: (error) => print(error),
       ),
       builder: (runMutation, result) {
-        return RaisedButton(
+        return ElevatedButton(
             child: Text('Add to cart'),
             onPressed: () {
               if (types == 'SimpleProduct' || types == 'VirtualProduct') {

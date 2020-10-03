@@ -127,7 +127,7 @@ class HomeTabs extends StatelessWidget {
     final children = <Widget>[];
     children.add(productsList(context));
     children.add(
-      RaisedButton(
+      ElevatedButton(
         child: Text('All Categories'),
         onPressed: () => Navigator.push(
           context,

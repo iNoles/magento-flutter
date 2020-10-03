@@ -61,73 +61,83 @@ class CartTabs extends StatelessWidget {
 
         List items = result.data['cart']['items'];
         dynamic prices = result.data['cart']['prices'];
-        return ListView.builder(
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            final item = items[index];
-            return Column(
-              children: [
-                Card(
-                  child: Column(
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  final item = items[index];
+                  return Column(
                     children: [
-                      Row(
-                        children: [
-                          CachedNetworkImage(
-                            imageUrl: item['product']['thumbnail']['url'],
-                            width: 120,
-                            height: 120,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(item['product']['name']),
-                              Text(
-                                'Price: ${currencyWithPrice(item['prices']['row_total'])}',
-                              ),
-                              Text('qty: ${item['quantity']}')
-                            ],
-                          ),
-                          Spacer(),
-                          removeItems(context, item['id']),
-                        ],
+                      Card(
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                CachedNetworkImage(
+                                  imageUrl: item['product']['thumbnail']['url'],
+                                  width: 120,
+                                  height: 120,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(item['product']['name']),
+                                    Text(
+                                      'Price: ${currencyWithPrice(item['prices']['row_total'])}',
+                                    ),
+                                    Text('qty: ${item['quantity']}')
+                                  ],
+                                ),
+                                Spacer(),
+                                removeItems(context, item['id']),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ],
-                  ),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'TOTAL',
-                            style: Theme.of(context).textTheme.subtitle2,
-                          ),
-                          Text(
-                            currencyWithPrice(prices['grand_total']),
-                            style: Theme.of(context).textTheme.headline5,
-                          )
-                        ],
-                      ),
+                  );
+                },
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'TOTAL',
+                          style: Theme.of(context).textTheme.subtitle2,
+                        ),
+                        Text(
+                          currencyWithPrice(prices['grand_total']),
+                          style: Theme.of(context).textTheme.headline5,
+                        )
+                      ],
                     ),
-                    Expanded(
-                      child: Container(
-                        height: 50,
-                        child: RaisedButton(
-                          child: Text('CHECKOUT'),
-                          onPressed: null,
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.0),
                           ),
                         ),
+                        child: Text('CHECKOUT'),
+                        onPressed: null,
                       ),
-                    )
-                  ],
-                ),
-              ],
-            );
-          },
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
         );
       },
     );

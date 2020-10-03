@@ -6,6 +6,7 @@ class MyOrderScreen extends StatelessWidget {
   {
     customerOrders {
       items {
+        order_number
         created_at
         grand_total
         status
@@ -41,7 +42,7 @@ class MyOrderScreen extends StatelessWidget {
               final item = items[index];
               return Column(
                 children: [
-                  //Text('Order # ${item['order_number']}'),
+                  Text('Order # ${item['order_number']}'),
                   Text('Created: ${item['created_at']}'),
                   Text('Order Total: ${item['grand_total']}'),
                   Text('Status: ${item['status']}'),

@@ -36,7 +36,7 @@ class _StartScreenState extends State<StartScreen> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
-              label: 'Customer',
+              label: 'Profile',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.shopping_cart),

@@ -3,6 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'address_screen.dart';
 import 'myorder_screen.dart';
 import 'signin_screen.dart';
 import 'accounts_provider.dart';
@@ -15,7 +16,6 @@ class AccountsTabs extends StatelessWidget {
     customer {
       firstname
       lastname
-      email
     }
   }
   ''';
@@ -32,7 +32,7 @@ class AccountsTabs extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Account'),
+        title: Text('Profile'),
       ),
       body: accountsBody(context),
     );
@@ -53,7 +53,7 @@ class AccountsTabs extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text('Logged in as Guest'),
-            RaisedButton(
+            ElevatedButton(
               child: Text('Sign in'),
               onPressed: () => Navigator.push(
                 context,
@@ -63,6 +63,18 @@ class AccountsTabs extends StatelessWidget {
           ],
         ),
       );
+
+  Widget _buildCoverImage(Size screenSize) {
+    return Container(
+      height: screenSize.height / 2.6,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/profile_cover.jpg'),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
 
   Widget customer(BuildContext context) => Query(
         options: QueryOptions(documentNode: gql(customerQuery)),
@@ -78,13 +90,54 @@ class AccountsTabs extends StatelessWidget {
           }
 
           dynamic customer = result.data['customer'];
-          return Align(
-            alignment: Alignment.topCenter,
+          var screenSize = MediaQuery.of(context).size;
+          return SingleChildScrollView(
             child: Column(
               children: [
-                Text('Contact Information'),
-                Text('${customer['firstname']} ${customer['lastname']}'),
-                Text(customer['email']),
+                Stack(
+                  children: [
+                    _buildCoverImage(screenSize),
+                    Column(
+                      children: [
+                        SizedBox(height: screenSize.height / 6.4),
+                        _buildProfileImage(),
+                        Text(
+                          '${customer['firstname']} ${customer['lastname']}',
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+                Card(
+                  child: ListTile(
+                    title: Text('Orders'),
+                    subtitle: Text('Check your order status'),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyOrderScreen()),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    title: Text('Address'),
+                    subtitle: Text('Save address for hassle-free checkout'),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddressScreen()),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    title: Text('Wishlist'),
+                    subtitle: Text('Check your wishlists'),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => WishlistScreen()),
+                    ),
+                  ),
+                ),
                 Mutation(
                   options: MutationOptions(
                     documentNode: gql(revokeToken),
@@ -110,31 +163,37 @@ class AccountsTabs extends StatelessWidget {
                     },
                   ),
                   builder: (RunMutation runMutation, QueryResult result) {
-                    return RaisedButton(
-                      child: Text('Log Out'),
+                    return ElevatedButton(
+                      child: Text('Logout'),
                       onPressed: () {
                         runMutation({});
                       },
                     );
                   },
                 ),
-                RaisedButton(
-                  child: Text('My Orders'),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyOrderScreen()),
-                  ),
-                ),
-                RaisedButton(
-                  child: Text('My Wishlists'),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => WishlistScreen()),
-                  ),
-                ),
               ],
             ),
           );
         },
       );
+
+  Widget _buildProfileImage() {
+    return Center(
+      child: Container(
+        width: 140.0,
+        height: 140.0,
+        decoration: BoxDecoration(
+          /*image: DecorationImage(
+            image: AssetImage('assets/images/nickfrost.jpg'),
+            fit: BoxFit.cover,
+          ),*/
+          borderRadius: BorderRadius.circular(10.0),
+          border: Border.all(
+            color: Colors.white,
+            width: 10.0,
+          ),
+        ),
+      ),
+    );
+  }
 }

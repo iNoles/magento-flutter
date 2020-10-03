@@ -116,7 +116,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   },
                 ),
                 builder: (RunMutation runMutation, QueryResult result) {
-                  return RaisedButton(
+                  return ElevatedButton(
                     child: Text('Login'),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
