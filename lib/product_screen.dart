@@ -72,6 +72,7 @@ class ProductScreen extends StatelessWidget {
                     items {
                       title
                       option_id
+                      type
                       options {
                         label
                         id
