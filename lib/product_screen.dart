@@ -8,6 +8,8 @@ import 'cart_provider.dart';
 import 'product_cart.dart';
 import 'widget/form_builder.dart';
 import 'widget/form_builder_dropdown.dart';
+import 'widget/form_builder_field_option.dart';
+import 'widget/form_builder_radio_group.dart';
 import 'widget/form_builder_text_field.dart';
 import 'widget/form_builder_validator.dart';
 import 'utils.dart';
@@ -66,6 +68,16 @@ class ProductScreen extends StatelessWidget {
                       }
                     }
                   }
+                  ... on BundleProduct {
+                    items {
+                      title
+                      option_id
+                      options {
+                        label
+                        id
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -107,6 +119,7 @@ class ProductScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  loadSpecificTypesOption(item),
                   FormBuilderTextField(
                     attribute: 'quantity',
                     keyboardType: TextInputType.number,
@@ -119,7 +132,6 @@ class ProductScreen extends StatelessWidget {
                       FormBuilderValidators.min(1)
                     ],
                   ),
-                  getConfigurableOptions(item),
                   Text('Product Details'),
                   Text(parse(item['description']['html']).documentElement.text),
                   SizedBox(
@@ -211,6 +223,59 @@ class ProductScreen extends StatelessWidget {
       }
     }
     return variantSku;
+  }
+
+  Widget loadSpecificTypesOption(dynamic data) {
+    final types = data['__typename'];
+    if (types == 'ConfigurableProduct') {
+      return getConfigurableOptions(data);
+    } else if (types == 'BundleProduct') {
+      return getBundleItem(data);
+    }
+    return Container();
+  }
+
+  Widget getBundleItem(dynamic data) {
+    var bundleItems = data['items'];
+    if (bundleItems == null) {
+      return Container();
+    }
+    var widgetList = <Widget>[];
+    for (var item in bundleItems) {
+      widgetList.add(Text(item['title']));
+      widgetList.add(
+        FormBuilderRadioGroup(
+          attribute: item['option_id'].toString(),
+          validators: [FormBuilderValidators.required()],
+          options: (item['options'] as List)
+              .map((e) => FormBuilderFieldOption(
+                    value: e['id'],
+                    child: Text(e['label']),
+                  ))
+              .toList(),
+        ),
+      );
+      widgetList.add(
+        FormBuilderTextField(
+          attribute: '${item['option_id']}_quantity',
+          keyboardType: TextInputType.number,
+          initialValue: '1',
+          decoration: InputDecoration(
+            labelText: 'Quantity',
+          ),
+          validators: [
+            FormBuilderValidators.required(),
+            FormBuilderValidators.min(1),
+          ],
+        ),
+      );
+    }
+    return Container(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        children: widgetList,
+      ),
+    );
   }
 
   Widget getConfigurableOptions(dynamic data) {
