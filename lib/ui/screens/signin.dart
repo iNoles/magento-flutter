@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:magento_flutter/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'accounts_provider.dart';
+import '../../providers/accounts.dart';
+import '../../utils.dart';
 
 class SignInScreen extends StatefulWidget {
   @override

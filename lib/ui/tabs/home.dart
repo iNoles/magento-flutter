@@ -2,9 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import 'categories_screen.dart';
-import 'product_screen.dart';
-import 'utils.dart';
+import '../screens/categories.dart';
+import '../screens/product.dart';
+import '../../utils.dart';
 
 class HomeTabs extends StatelessWidget {
   @override

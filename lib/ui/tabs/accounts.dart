@@ -3,12 +3,12 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'address_screen.dart';
-import 'myorder_screen.dart';
-import 'signin_screen.dart';
-import 'accounts_provider.dart';
-import 'utils.dart';
-import 'wishlist_screen.dart';
+import '../screens/address.dart';
+import '../screens/myorder.dart';
+import '../screens/signin.dart';
+import '../../providers/accounts.dart';
+import '../../utils.dart';
+import '../screens/wishlist.dart';
 
 class AccountsTabs extends StatelessWidget {
   final String customerQuery = '''

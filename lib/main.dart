@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:magento_flutter/cart_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'accounts_provider.dart';
-import 'start_screen.dart';
+import 'providers/cart.dart';
+import 'providers/accounts.dart';
+import 'ui/screens/start.dart';
 
 void main() => runApp(
       MultiProvider(

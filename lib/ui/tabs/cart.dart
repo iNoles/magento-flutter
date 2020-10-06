@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
-import 'cart_provider.dart';
-import 'utils.dart';
+import '../../providers/cart.dart';
+import '../../utils.dart';
 
 class CartTabs extends StatelessWidget {
   @override

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'accounts_tabs.dart';
-import 'cart_provider.dart';
-import 'cart_tabs.dart';
-import 'home_tabs.dart';
-import 'search_tabs.dart';
-import 'widget/custom_scaffold.dart';
-import 'utils.dart';
+import '../tabs/accounts.dart';
+import '../../providers/cart.dart';
+import '../tabs/cart.dart';
+import '../tabs/home.dart';
+import '../tabs/search.dart';
+import '../widget/custom_scaffold.dart';
+import '../../utils.dart';
 
 class StartScreen extends StatefulWidget {
   @override

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import 'category_screen.dart';
+import 'category.dart';
 
 class CategoriesScreen extends StatelessWidget {
   CategoriesScreen({Key key}) : super(key: key);

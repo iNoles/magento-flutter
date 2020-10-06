@@ -3,9 +3,10 @@ import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
-import 'cart_provider.dart';
 
-final Map<String, String> _currencies = {
+import 'providers/cart.dart';
+
+const Map<String, String> _currencies = {
   'USD': '\$',
   'EUR': '€',
   'AUD': 'A\$',

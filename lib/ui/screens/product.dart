@@ -4,15 +4,15 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:provider/provider.dart';
 
-import 'cart_provider.dart';
-import 'product_cart.dart';
-import 'widget/form_builder.dart';
-import 'widget/form_builder_dropdown.dart';
-import 'widget/form_builder_field_option.dart';
-import 'widget/form_builder_radio_group.dart';
-import 'widget/form_builder_text_field.dart';
-import 'widget/form_builder_validator.dart';
-import 'utils.dart';
+import '../../providers/cart.dart';
+import '../../product_utils.dart';
+import '../widget/form_builder.dart';
+import '../widget/form_builder_dropdown.dart';
+import '../widget/form_builder_field_option.dart';
+import '../widget/form_builder_radio_group.dart';
+import '../widget/form_builder_text_field.dart';
+import '../widget/form_builder_validator.dart';
+import '../../utils.dart';
 
 class ProductScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormBuilderState>();
@@ -152,11 +152,11 @@ class ProductScreen extends StatelessWidget {
     var mutationString = '';
     final types = item['__typename'];
     if (types == 'SimpleProduct') {
-      mutationString = simpleProducts;
+      mutationString = Product.simple;
     } else if (types == 'VirtualProduct') {
-      mutationString = virtualProducts;
+      mutationString = Product.virtual;
     } else if (types == 'ConfigurableProduct') {
-      mutationString = configurableProducts;
+      mutationString = Product.configurable;
     }
 
     if (mutationString.isEmpty) {
@@ -243,19 +243,36 @@ class ProductScreen extends StatelessWidget {
     }
     var widgetList = <Widget>[];
     for (var item in bundleItems) {
+      var type = item['type'];
       widgetList.add(Text(item['title']));
-      widgetList.add(
-        FormBuilderRadioGroup(
-          attribute: item['option_id'].toString(),
-          validators: [FormBuilderValidators.required()],
-          options: (item['options'] as List)
-              .map((e) => FormBuilderFieldOption(
-                    value: e['id'],
-                    child: Text(e['label']),
-                  ))
-              .toList(),
-        ),
-      );
+      if (type == 'radio') {
+        widgetList.add(
+          FormBuilderRadioGroup(
+            attribute: item['option_id'].toString(),
+            validators: [FormBuilderValidators.required()],
+            options: (item['options'] as List)
+                .map((e) => FormBuilderFieldOption(
+                      value: e['id'],
+                      child: Text(e['label']),
+                    ))
+                .toList(),
+          ),
+        );
+      } else {
+        widgetList.add(
+          FormBuilderDropdown(
+            attribute: item['option_id'].toString(),
+            validators: [FormBuilderValidators.required()],
+            items: (item['options'] as List)
+                .map((e) => DropdownMenuItem(
+                      value: e['id'],
+                      child: Text(e['label']),
+                    ))
+                .toList(),
+            hint: Text('Select'),
+          ),
+        );
+      }
       widgetList.add(
         FormBuilderTextField(
           attribute: '${item['option_id']}_quantity',
@@ -270,6 +287,7 @@ class ProductScreen extends StatelessWidget {
           ],
         ),
       );
+      widgetList.add(SizedBox(height: 25.0));
     }
     return Container(
       padding: EdgeInsets.all(16),

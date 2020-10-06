@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import 'product_screen.dart';
-import 'utils.dart';
+import 'product.dart';
+import '../../utils.dart';
 
 class WishlistScreen extends StatelessWidget {
   final String query = '''
