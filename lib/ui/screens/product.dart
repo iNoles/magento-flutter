@@ -39,6 +39,7 @@ class ProductScreen extends StatelessWidget {
                   image {
                     url
                   }
+                  sku
                   __typename
                   price_range {
                     minimum_price {
@@ -102,23 +103,46 @@ class ProductScreen extends StatelessWidget {
               key: _formKey,
               child: Column(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 20),
-                    child: CachedNetworkImage(
-                      imageUrl: item['image']['url'],
-                      placeholder: (context, url) =>
-                          Center(child: CircularProgressIndicator()),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                      height: 300,
+                  CachedNetworkImage(
+                    imageUrl: item['image']['url'],
+                    placeholder: (context, url) =>
+                        Center(child: CircularProgressIndicator()),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                    height: 300,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                        left: 15, right: 15, top: 20, bottom: 20),
+                    color: productCell(context),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [Text('SKU'), Text(item['sku'])],
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 20),
-                    child: Text(
-                      currencyWithPrice(
-                        item['price_range']['minimum_price']['final_price'],
-                      ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                        left: 15, right: 15, top: 20, bottom: 20),
+                    color: productCell(context),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Price'),
+                        Text(
+                          currencyWithPrice(
+                            item['price_range']['minimum_price']['final_price'],
+                          ),
+                        ),
+                      ],
                     ),
+                  ),
+                  SizedBox(
+                    height: 10,
                   ),
                   loadSpecificTypesOption(item),
                   FormBuilderTextField(
@@ -133,8 +157,26 @@ class ProductScreen extends StatelessWidget {
                       FormBuilderValidators.min(1)
                     ],
                   ),
-                  Text('Product Details'),
-                  Text(parse(item['description']['html']).documentElement.text),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.only(
+                        left: 15, right: 15, top: 20, bottom: 20),
+                    color: productCell(context),
+                    child: Column(
+                      children: [
+                        Text('Product Details'),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(parse(item['description']['html'])
+                            .documentElement
+                            .text),
+                      ],
+                    ),
+                  ),
                   SizedBox(
                     width: double.infinity, // match_parent
                     child: orderMutation(item, cartProvider),
@@ -204,21 +246,21 @@ class ProductScreen extends StatelessWidget {
     var variants = data['variants'] as List;
     for (var variant in variants) {
       var attributes = variant['attributes'] as List;
+      var zero = attributes
+          .firstWhere((element) => element['code'] == formValues[0].key);
       var first = attributes
           .firstWhere((element) => element['code'] == formValues[1].key);
-      var second = attributes
-          .firstWhere((element) => element['code'] == formValues[2].key);
       if (formValues.length > 3 && formValues.elementAt(3) != null) {
-        var third = attributes
+        var second = attributes
             .firstWhere((element) => element['code'] == formValues[3].key);
-        if (first['label'] == formValues[1].value &&
-            second['label'] == formValues[2].value &&
-            third['label'] == formValues[3].value) {
+        if (zero['label'] == formValues[0].value &&
+            first['label'] == formValues[1].value &&
+            second['label'] == formValues[2].value) {
           variantSku = variant['product']['sku'];
           break;
         }
-      } else if (first['label'] == formValues[1].value &&
-          second['label'] == formValues[2].value) {
+      } else if (zero['label'] == formValues[0].value &&
+          first['label'] == formValues[1].value) {
         variantSku = variant['product']['sku'];
         break;
       }

@@ -6,6 +6,8 @@ import '../screens/product.dart';
 import '../../utils.dart';
 
 class SearchTabs extends StatefulWidget {
+  SearchTabs({Key key}) : super(key: key);
+
   @override
   _SearchTabState createState() => _SearchTabState();
 }

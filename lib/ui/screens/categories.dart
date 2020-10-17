@@ -15,6 +15,10 @@ class CategoriesScreen extends StatelessWidget {
       children {
         id
         name
+        children {
+          id
+          name
+        }
       }
     }
   }

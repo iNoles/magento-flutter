@@ -11,6 +11,8 @@ import '../../utils.dart';
 import '../screens/wishlist.dart';
 
 class AccountsTabs extends StatelessWidget {
+  AccountsTabs({Key key}) : super(key: key);
+
   final String customerQuery = '''
   {
     customer {

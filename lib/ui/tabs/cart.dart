@@ -7,6 +7,8 @@ import '../../providers/cart.dart';
 import '../../utils.dart';
 
 class CartTabs extends StatelessWidget {
+  CartTabs({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

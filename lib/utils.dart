@@ -54,3 +54,8 @@ Future<void> getCart(BuildContext context) async {
   print(cardId);
   await context.read<CartProvider>().setId(cardId);
 }
+
+Color productCell(BuildContext context) {
+  final brightness = Theme.of(context).brightness;
+  return (brightness == Brightness.dark) ? Colors.grey : Colors.white;
+}
