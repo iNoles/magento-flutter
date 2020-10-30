@@ -32,13 +32,13 @@ class CategoriesScreen extends StatelessWidget {
         title: Text('Categories'),
       ),
       body: Query(
-        options: QueryOptions(documentNode: gql(query)),
-        builder: (QueryResult result, {Refetch refetch, FetchMore fetchMore}) {
+        options: QueryOptions(document: gql(query)),
+        builder: (result, {fetchMore, refetch}) {
           if (result.hasException) {
             return Text(result.exception.toString());
           }
 
-          if (result.loading) {
+          if (result.isLoading) {
             return Center(
               child: CircularProgressIndicator(),
             );

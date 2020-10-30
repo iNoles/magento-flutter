@@ -79,13 +79,13 @@ class AccountsTabs extends StatelessWidget {
   }
 
   Widget customer(BuildContext context) => Query(
-        options: QueryOptions(documentNode: gql(customerQuery)),
-        builder: (QueryResult result, {Refetch refetch, FetchMore fetchMore}) {
+        options: QueryOptions(document: gql(customerQuery)),
+        builder: (result, {fetchMore, refetch}) {
           if (result.hasException) {
             return Text(result.exception.toString());
           }
 
-          if (result.loading) {
+          if (result.isLoading) {
             return Center(
               child: CircularProgressIndicator(),
             );
@@ -142,11 +142,11 @@ class AccountsTabs extends StatelessWidget {
                 ),
                 Mutation(
                   options: MutationOptions(
-                    documentNode: gql(revokeToken),
+                    document: gql(revokeToken),
                     onCompleted: (data) async {
                       final result = data['revokeCustomerToken']['result'];
                       if (result) {
-                        Scaffold.of(context).showSnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Log out Succeeded!')),
                         );
                         Provider.of<AccountsProvider>(context, listen: false)
@@ -157,14 +157,14 @@ class AccountsTabs extends StatelessWidget {
                       }
                     },
                     onError: (error) {
-                      Scaffold.of(context).showSnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(error.toString()),
                         ),
                       );
                     },
                   ),
-                  builder: (RunMutation runMutation, QueryResult result) {
+                  builder: (runMutation, result) {
                     return ElevatedButton(
                       child: Text('Logout'),
                       onPressed: () {

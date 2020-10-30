@@ -77,7 +77,7 @@ class _SearchTabState extends State<SearchTabs> {
 
   Widget queryBody(String query) => Query(
         options: QueryOptions(
-          documentNode: gql('''
+          document: gql('''
         {
           products(search: "$query") {
             items {
@@ -99,12 +99,12 @@ class _SearchTabState extends State<SearchTabs> {
         }
       '''),
         ),
-        builder: (QueryResult result, {Refetch refetch, FetchMore fetchMore}) {
+        builder: (result, {fetchMore, refetch}) {
           if (result.hasException) {
             return Text(result.exception.toString());
           }
 
-          if (result.loading) {
+          if (result.isLoading) {
             return Center(
               child: CircularProgressIndicator(),
             );

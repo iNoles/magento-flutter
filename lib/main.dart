@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     Link link;
     final httpLink = HttpLink(
-      uri: 'https://devdemo.bsscommerce.com/magento234/default/graphql',
+      'https://devdemo.bsscommerce.com/magento234/default/graphql',
     );
 
     final provider = context.watch<AccountsProvider>();
@@ -33,9 +33,10 @@ class MyApp extends StatelessWidget {
       link = httpLink;
     }
 
+    // The default store is the InMemoryStore, which does NOT persist to disk
     var client = ValueNotifier<GraphQLClient>(
       GraphQLClient(
-        cache: InMemoryCache(),
+        cache: GraphQLCache(),
         link: link,
       ),
     );

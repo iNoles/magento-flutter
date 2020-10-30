@@ -20,7 +20,11 @@ class ProductScreen extends StatelessWidget {
   final String title;
   final String sku;
 
-  ProductScreen({Key key, this.title, this.sku}) : super(key: key);
+  ProductScreen({
+    Key key,
+    @required this.title,
+    @required this.sku,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +35,7 @@ class ProductScreen extends StatelessWidget {
       ),
       body: Query(
         options: QueryOptions(
-          documentNode: gql(
+          document: gql(
             '''
             {
               products(filter: { sku: { eq: "$sku" }}) {
@@ -91,7 +95,7 @@ class ProductScreen extends StatelessWidget {
             return Text(result.exception.toString());
           }
 
-          if (result.loading) {
+          if (result.isLoading) {
             return Center(
               child: CircularProgressIndicator(),
             );
@@ -209,7 +213,7 @@ class ProductScreen extends StatelessWidget {
     }
     return Mutation(
       options: MutationOptions(
-        documentNode: gql(mutationString),
+        document: gql(mutationString),
         onCompleted: (data) => print(data),
         onError: (error) => print(error),
       ),
@@ -250,7 +254,7 @@ class ProductScreen extends StatelessWidget {
           .firstWhere((element) => element['code'] == formValues[0].key);
       var first = attributes
           .firstWhere((element) => element['code'] == formValues[1].key);
-      if (formValues.length > 3 && formValues.elementAt(3) != null) {
+      if (formValues.length > 3) {
         var second = attributes
             .firstWhere((element) => element['code'] == formValues[3].key);
         if (zero['label'] == formValues[0].value &&

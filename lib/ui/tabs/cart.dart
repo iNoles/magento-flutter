@@ -22,7 +22,7 @@ class CartTabs extends StatelessWidget {
   Widget cardBody(BuildContext context) {
     final cartProvider = context.watch<CartProvider>();
     return Query(
-      options: QueryOptions(documentNode: gql('''
+      options: QueryOptions(document: gql('''
       {
         cart(cart_id: "${cartProvider.id}") {
           items {
@@ -50,12 +50,12 @@ class CartTabs extends StatelessWidget {
         }
       }
       ''')),
-      builder: (QueryResult result, {Refetch refetch, FetchMore fetchMore}) {
+      builder: (result, {fetchMore, refetch}) {
         if (result.hasException) {
           return Text(result.exception.toString());
         }
 
-        if (result.loading) {
+        if (result.isLoading) {
           return Center(
             child: CircularProgressIndicator(),
           );
@@ -146,7 +146,7 @@ class CartTabs extends StatelessWidget {
   }
 
   Widget removeItems(BuildContext context, String id) => Mutation(
-        options: MutationOptions(documentNode: gql('''
+        options: MutationOptions(document: gql('''
         mutation RemoveItem(\$cartId: String!, \$itemId: Int!) {
           removeItemFromCart(
             input: {
@@ -164,7 +164,7 @@ class CartTabs extends StatelessWidget {
           }
         }
       ''')),
-        builder: (RunMutation runMutation, QueryResult result) {
+        builder: (runMutation, result) {
           final cartProvider = context.watch<CartProvider>();
           return IconButton(
             icon: Icon(Icons.delete),

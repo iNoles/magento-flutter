@@ -90,7 +90,7 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
               Mutation(
                 options: MutationOptions(
-                  documentNode: gql(createToken),
+                  document: gql(createToken),
                   onCompleted: (data) async {
                     if (data == null) {
                       return;
@@ -108,14 +108,14 @@ class _SignInScreenState extends State<SignInScreen> {
                     Navigator.pop(context);
                   },
                   onError: (error) {
-                    _scaffoldState.currentState.showSnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(error.toString()),
                       ),
                     );
                   },
                 ),
-                builder: (RunMutation runMutation, QueryResult result) {
+                builder: (runMutation, result) {
                   return ElevatedButton(
                     child: Text('Login'),
                     onPressed: () {

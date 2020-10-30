@@ -9,7 +9,11 @@ class CategoryScreen extends StatelessWidget {
   final String title;
   final int categoryId;
 
-  CategoryScreen({Key key, this.title, this.categoryId}) : super(key: key);
+  CategoryScreen({
+    Key key,
+    @required this.title,
+    @required this.categoryId,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +23,7 @@ class CategoryScreen extends StatelessWidget {
       ),
       body: Query(
         options: QueryOptions(
-          documentNode: gql('''
+          document: gql('''
           {
             products(filter: {
               category_id: {
@@ -45,12 +49,12 @@ class CategoryScreen extends StatelessWidget {
           }
           '''),
         ),
-        builder: (QueryResult result, {Refetch refetch, FetchMore fetchMore}) {
+        builder: (result, {fetchMore, refetch}) {
           if (result.hasException) {
             return Text(result.exception.toString());
           }
 
-          if (result.loading) {
+          if (result.isLoading) {
             return Center(
               child: CircularProgressIndicator(),
             );

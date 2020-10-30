@@ -22,7 +22,7 @@ class HomeTabs extends StatelessWidget {
   Widget productsList(BuildContext context) {
     return Query(
       options: QueryOptions(
-        documentNode: gql('''
+        document: gql('''
         {
           categoryList(filters: { ids: {in: ["20", "11"]}}) {
             products {
@@ -46,12 +46,12 @@ class HomeTabs extends StatelessWidget {
         }
         '''),
       ),
-      builder: (QueryResult result, {Refetch refetch, FetchMore fetchMore}) {
+      builder: (result, {fetchMore, refetch}) {
         if (result.hasException) {
           return Text(result.exception.toString());
         }
 
-        if (result.loading) {
+        if (result.isLoading) {
           return Center(
             child: CircularProgressIndicator(),
           );

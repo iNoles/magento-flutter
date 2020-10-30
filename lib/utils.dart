@@ -38,7 +38,7 @@ int certainPlatformGridCount() {
 Future<void> getCart(BuildContext context) async {
   final client = GraphQLProvider.of(context)?.value;
   var result = await client.mutate(
-    MutationOptions(documentNode: gql('''
+    MutationOptions(document: gql('''
     mutation {
       createEmptyCart
     }
