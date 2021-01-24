@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:magento_flutter/ui/screens/checkout_address.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/cart.dart';
@@ -132,7 +133,12 @@ class CartTabs extends StatelessWidget {
                           ),
                         ),
                         child: Text('CHECKOUT'),
-                        onPressed: null,
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CheckoutAddressScreen(),
+                          ),
+                        ),
                       ),
                     ),
                   )

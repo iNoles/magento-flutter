@@ -148,18 +148,18 @@ class ProductScreen extends StatelessWidget {
                   SizedBox(
                     height: 10,
                   ),
-                  loadSpecificTypesOption(item),
+                  loadSpecificTypesOption(context, item),
                   FormBuilderTextField(
-                    attribute: 'quantity',
+                    name: 'quantity',
                     keyboardType: TextInputType.number,
                     initialValue: '1',
                     decoration: InputDecoration(
                       labelText: 'Quantity',
                     ),
-                    validators: [
-                      FormBuilderValidators.required(),
-                      FormBuilderValidators.min(1)
-                    ],
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(context),
+                      FormBuilderValidators.min(context, 1),
+                    ]),
                   ),
                   SizedBox(
                     height: 10,
@@ -272,17 +272,17 @@ class ProductScreen extends StatelessWidget {
     return variantSku;
   }
 
-  Widget loadSpecificTypesOption(dynamic data) {
+  Widget loadSpecificTypesOption(BuildContext context, dynamic data) {
     final types = data['__typename'];
     if (types == 'ConfigurableProduct') {
-      return getConfigurableOptions(data);
+      return getConfigurableOptions(context, data);
     } else if (types == 'BundleProduct') {
-      return getBundleItem(data);
+      return getBundleItem(context, data);
     }
     return Container();
   }
 
-  Widget getBundleItem(dynamic data) {
+  Widget getBundleItem(BuildContext context, dynamic data) {
     var bundleItems = data['items'];
     if (bundleItems == null) {
       return Container();
@@ -294,8 +294,8 @@ class ProductScreen extends StatelessWidget {
       if (type == 'radio') {
         widgetList.add(
           FormBuilderRadioGroup(
-            attribute: item['option_id'].toString(),
-            validators: [FormBuilderValidators.required()],
+            name: item['option_id'].toString(),
+            validator: FormBuilderValidators.required(context),
             options: (item['options'] as List)
                 .map((e) => FormBuilderFieldOption(
                       value: e['id'],
@@ -307,8 +307,8 @@ class ProductScreen extends StatelessWidget {
       } else {
         widgetList.add(
           FormBuilderDropdown(
-            attribute: item['option_id'].toString(),
-            validators: [FormBuilderValidators.required()],
+            name: item['option_id'].toString(),
+            validator: FormBuilderValidators.required(context),
             items: (item['options'] as List)
                 .map((e) => DropdownMenuItem(
                       value: e['id'],
@@ -321,16 +321,16 @@ class ProductScreen extends StatelessWidget {
       }
       widgetList.add(
         FormBuilderTextField(
-          attribute: '${item['option_id']}_quantity',
+          name: '${item['option_id']}_quantity',
           keyboardType: TextInputType.number,
           initialValue: '1',
           decoration: InputDecoration(
             labelText: 'Quantity',
           ),
-          validators: [
-            FormBuilderValidators.required(),
-            FormBuilderValidators.min(1),
-          ],
+          validator: FormBuilderValidators.compose([
+            FormBuilderValidators.required(context),
+            FormBuilderValidators.min(context, 1),
+          ]),
         ),
       );
       widgetList.add(SizedBox(height: 25.0));
@@ -343,7 +343,7 @@ class ProductScreen extends StatelessWidget {
     );
   }
 
-  Widget getConfigurableOptions(dynamic data) {
+  Widget getConfigurableOptions(BuildContext context, dynamic data) {
     var configurableOptions = data['configurable_options'];
     if (configurableOptions == null) {
       return Container();
@@ -352,7 +352,7 @@ class ProductScreen extends StatelessWidget {
     for (var option in configurableOptions) {
       widgetList.add(
         FormBuilderDropdown(
-          attribute: option['label'].toLowerCase(),
+          name: option['label'].toLowerCase(),
           decoration: InputDecoration(labelText: option['label']),
           items: option['values']
               .map<DropdownMenuItem>((e) => DropdownMenuItem(
@@ -361,7 +361,7 @@ class ProductScreen extends StatelessWidget {
                   ))
               .toList(),
           hint: Text('Select'),
-          validators: [FormBuilderValidators.required()],
+          validator: FormBuilderValidators.required(context),
         ),
       );
     }

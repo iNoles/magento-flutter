@@ -4,8 +4,6 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'category.dart';
 
 class CategoriesScreen extends StatelessWidget {
-  CategoriesScreen({Key key}) : super(key: key);
-
   final String query = '''
 {
   categoryList {
