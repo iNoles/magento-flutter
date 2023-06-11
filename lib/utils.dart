@@ -1,10 +1,8 @@
-import 'dart:io' show Platform;
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:provider/provider.dart';
-
-import 'providers/cart.dart';
 
 const Map<String, String> _currencies = {
   'USD': '\$',
@@ -23,7 +21,7 @@ const Map<String, String> _currencies = {
 
 String currencyWithPrice(dynamic price) {
   final currency = _currencies[price['currency']];
-  return '${currency}${price['value'].toString()}';
+  return '$currency${price['value'].toString()}';
 }
 
 /// Desktop Platform = 4 and Mobile Platform = 2
@@ -35,8 +33,8 @@ int certainPlatformGridCount() {
   return gridViewCount;
 }
 
-Future<void> getCart(BuildContext context) async {
-  final client = GraphQLProvider.of(context)?.value;
+Future<String> getCart(BuildContext context) async {
+  final client = GraphQLProvider.of(context).value;
   var result = await client.mutate(
     MutationOptions(document: gql('''
     mutation {
@@ -46,16 +44,11 @@ Future<void> getCart(BuildContext context) async {
   );
 
   if (result.hasException) {
-    print(result.exception.toString());
-    return;
+    if (kDebugMode) {
+      print(result.exception.toString());
+    }
+    return "";
   }
 
-  final cardId = result.data['createEmptyCart'];
-  print(cardId);
-  await context.read<CartProvider>().setId(cardId);
-}
-
-Color productCell(BuildContext context) {
-  final brightness = Theme.of(context).brightness;
-  return (brightness == Brightness.dark) ? Colors.grey : Colors.white;
+  return result.data?['createEmptyCart'];
 }
