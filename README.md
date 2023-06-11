@@ -6,14 +6,9 @@
 
 # magento_flutter: Magento 2 Flutter eCommerce App
 
-mangeto_flutter is an e-commerce app for Magento 2.3.4 onwards. it consumes [Magento 2 GraphQL API](https://devdocs.magento.com/guides/v2.3/graphql/) to display catalog, products, add products to cart and let you place order.
+mangeto_flutter is an e-commerce app for Magento 2.4 onwards. it consumes [Magento 2 GraphQL API](https://devdocs.magento.com/guides/v2.4/graphql/) to display catalog, products, add products to cart and let you place order.
 
-## :camera: Screenshots
-<div style="display:flex;">
-   <img src="screenshots/1.png" width="19%">
-   <img src="screenshots/2.png" width="19%">
-   <img src="screenshots/3.png" width="19%">
-</div>
+A new Flutter project.
 
 ## Getting Started
 
@@ -21,9 +16,9 @@ This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
