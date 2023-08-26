@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -41,8 +42,16 @@ Widget orderMutation(
   return Mutation(
     options: MutationOptions(
       document: gql(mutationQuery),
-      onCompleted: (data) => print(data),
-      onError: (error) => print(error),
+      onCompleted: (data) {
+        if (kDebugMode) {
+          print(data);
+        }
+      },
+      onError: (error) {
+        if (kDebugMode) {
+          print(error);
+        }
+      },
     ),
     builder: (runMutation, result) {
       key.currentState?.save();
