@@ -7,6 +7,7 @@ import 'package:gql_dio_link/gql_dio_link.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
+import 'app_config.dart';
 import 'provider/accounts.dart';
 import 'provider/cart.dart';
 import 'screen/start.dart';
@@ -15,11 +16,14 @@ void main() async {
   // We're using HiveStore for persistence,
   // so we need to initialize Hive.
   await initHiveForFlutter();
+// load our config
+  final config = await AppConfig.forEnvironment();
+
   final dio = Dio();
   final cookieJar = CookieJar();
   dio.interceptors.add(CookieManager(cookieJar));
   final link = Link.from([
-    DioLink("https://demo-m2.bird.eu/graphql", client: dio),
+    DioLink("${config.apiUrl}/graphql", client: dio),
   ]);
   final ValueNotifier<GraphQLClient> client = ValueNotifier(
     GraphQLClient(

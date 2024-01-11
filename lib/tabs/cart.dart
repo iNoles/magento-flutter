@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../app_config.dart';
+
 class CartTabs extends StatefulWidget {
   const CartTabs({super.key});
 
@@ -12,12 +14,15 @@ class _CartTabsState extends State<CartTabs> {
   late final WebViewController? controller;
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
+
+    // load our config
+    final config = await AppConfig.forEnvironment();
     try {
       controller = WebViewController()
         ..loadRequest(
-          Uri.parse('https://demo-m2.bird.eu/checkout/cart/'),
+          Uri.parse("${config.apiUrl}/checkout/cart"),
         );
     } catch (e) {
       controller = null;
