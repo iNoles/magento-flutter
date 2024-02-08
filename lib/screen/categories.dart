@@ -57,7 +57,9 @@ class CategoriesScreen extends StatelessWidget {
   }
 
   Widget _buildTitles(BuildContext context, dynamic children) {
-    if (children['children'] == null) {
+    final hasChildren = children['children'] != null && children['children'].isNotEmpty;
+
+    if (!hasChildren) {
       return ListTile(
         title: Text(
           children['name'],
@@ -73,6 +75,7 @@ class CategoriesScreen extends StatelessWidget {
         ),
       );
     }
+
     return ExpansionTile(
       title: Text(children['name'] ?? 'Empty'),
       children: children['children']
