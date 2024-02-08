@@ -15,11 +15,11 @@ class CategoryScreen extends StatelessWidget {
     required this.categoryId,
   });
 
-  static const query = """
-   query GetProductsByCategory(\$categoryId) {
+  static const query = r'''
+   query GetProductsByCategory($categoryId: String) {
     products(filter: {
       category_uid: {
-        eq: "\$categoryId"
+        eq: $categoryId
       }
     } ) {
       items {
@@ -39,7 +39,7 @@ class CategoryScreen extends StatelessWidget {
         }
       }
    }
-  """;
+  ''';
 
   @override
   Widget build(BuildContext context) {
