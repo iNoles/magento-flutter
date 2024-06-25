@@ -1,9 +1,3 @@
-<hr>
-<p align="center">
-  <b>magento_flutter IS CURRENTLY IN EARLY DEVELOPMENT, NOT READY TO BE USED!</b>
-</p>
-<hr>
-
 # Magento Flutter: Magento 2 eCommerce App with Flutter
 
 Magento Flutter is an eCommerce app designed for Magento 2.4 and onwards. It leverages the Magento 2 GraphQL API to seamlessly integrate with your Magento store, enabling functionalities like browsing the catalog, viewing products, adding items to the cart, and facilitating order placement directly from a mobile device.
